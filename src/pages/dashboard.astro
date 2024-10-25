@@ -1,0 +1,15 @@
+---
+import PocketBase from 'pocketbase'
+import Layout from '@layouts/Layout.astro'
+import WorkoutCard from '@components/workouts/WorkoutCard.astro'
+
+import { getAllWorkouts } from '@data/pocketbase'
+
+const workouts = await getAllWorkouts(Astro.locals.pb)
+---
+
+<Layout title="Dashboard">
+  <ul>
+    {workouts.map((workout) => <WorkoutCard workout={workout} />)}
+  </ul>
+</Layout>

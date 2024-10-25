@@ -1,0 +1,37 @@
+---
+import Layout from '@layouts/Layout.astro'
+import { getWorkout, getActivitiesForWorkout } from '@data/pocketbase'
+
+const { workout_id = '' } = Astro.params
+
+const workout = await getWorkout(Astro.locals.pb, workout_id)
+
+if (!workout) {
+  return Astro.redirect('/dashboard')
+}
+
+const activities = await getActivitiesForWorkout(Astro.locals.pb, workout_id)
+---
+
+<Layout title={workout.name}>
+  <div class="py-10 mx-auto text-black max-w-7xl space-y-6">
+    <div
+      class="rounded-lg bg-zinc-900 px-5 py-4 sm:py-2.5 text-xl sm:text-3xl md:text-5xl text-white uppercase text-center font-extrabold"
+    >
+      {workout.name}
+    </div>
+    <div>
+      {
+        activities.length === 0 && (
+          <p class="text-center text-zinc-900 dark:text-black pb-10">
+            Nothing yet
+          </p>
+        )
+      }
+
+      <ul class="space-y-6">
+        {activities.map((activity) => <li>{JSON.stringify(activity)}</li>)}
+      </ul>
+    </div>
+  </div>
+</Layout>
