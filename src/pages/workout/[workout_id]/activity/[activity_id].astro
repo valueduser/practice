@@ -55,11 +55,7 @@ try {
       )
     }
     <div>{activity.instructions}</div>
-    {
-      activity.duration > 0 && (
-        <Timer initialDuration={activity.duration} client:load />
-      )
-    }
+    {activity.duration > 0 && <Timer initialDuration={activity.duration} />}
 
     <NavigationButton
       direction="back"
