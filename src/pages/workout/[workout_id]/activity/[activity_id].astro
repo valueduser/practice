@@ -6,6 +6,10 @@ import NavigationButton from '@components/NavigationButton.astro'
 
 const { workout_id, activity_id } = Astro.params
 
+if (!workout_id || !activity_id) {
+  return Astro.redirect('/app/dashboard')
+}
+
 let activity
 try {
   activity = await getFullActivity(Astro.locals.pb, workout_id, activity_id)
