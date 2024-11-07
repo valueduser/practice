@@ -4,5 +4,7 @@ const { workout } = Astro.props
 ---
 
 <li>
-  {workout.name}
+  <a href={`/workout/${workout.id}`}>
+    {workout.name}
+  </a>
 </li>

@@ -1,37 +1,37 @@
 ---
 import Layout from '@layouts/Layout.astro'
 import { getWorkout, getActivitiesForWorkout } from '@data/pocketbase'
+import ActivityCard from '@components/activities/ActivityCard.astro'
+import NavigationButton from '@components/NavigationButton.astro'
 
 const { workout_id = '' } = Astro.params
 
-const workout = await getWorkout(Astro.locals.pb, workout_id)
-
-if (!workout) {
-  return Astro.redirect('/dashboard')
+let workout
+try {
+  workout = await getWorkout(Astro.locals.pb, workout_id)
+} catch (e) {
+  return Astro.redirect('/app/dashboard')
 }
 
 const activities = await getActivitiesForWorkout(Astro.locals.pb, workout_id)
 ---
 
 <Layout title={workout.name}>
-  <div class="py-10 mx-auto text-black max-w-7xl space-y-6">
-    <div
-      class="rounded-lg bg-zinc-900 px-5 py-4 sm:py-2.5 text-xl sm:text-3xl md:text-5xl text-white uppercase text-center font-extrabold"
-    >
+  <div>
+    <div>
       {workout.name}
     </div>
     <div>
-      {
-        activities.length === 0 && (
-          <p class="text-center text-zinc-900 dark:text-black pb-10">
-            Nothing yet
-          </p>
-        )
-      }
+      {activities.length === 0 && <p>Nothing yet</p>}
 
-      <ul class="space-y-6">
-        {activities.map((activity) => <li>{JSON.stringify(activity)}</li>)}
+      <ul>
+        {
+          activities.map((activity) => (
+            <ActivityCard workout={workout} activity={activity} />
+          ))
+        }
       </ul>
     </div>
+    <NavigationButton direction="back" href={`/dashboard`} />
   </div>
 </Layout>

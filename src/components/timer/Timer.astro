@@ -1,0 +1,69 @@
+---
+interface Props {
+  initialDuration: number
+}
+
+const { initialDuration } = Astro.props
+---
+
+<div class="timer-component" style="width: 100%;">
+  <div class="timer" style="width: 100%; max-width: 300px; margin: 0 auto;">
+    <div class="progress-bar" style="width: 100%; height: 20px; background-color: #e0e0e0; border-radius: 10px; overflow: hidden;">
+      <div class="progress" style="width: 0; height: 100%; background-color: #4caf50; transition: width 0.5s ease-in-out;"></div>
+    </div>
+    <div class="time-display" style="text-align: center; font-size: 1.5rem; margin-top: 10px;">00:00</div>
+  </div>
+</div>
+
+<script define:vars={{ initialDuration }}>
+  class Timer {
+    constructor(duration) {
+      this.duration = duration
+      this.remaining = duration
+      this.progressBar = null
+      this.timeDisplay = null
+      this.intervalId = null
+    }
+
+    init() {
+      this.progressBar = document.querySelector('.progress')
+      this.timeDisplay = document.querySelector('.time-display')
+      this.updateDisplay()
+    }
+
+    start() {
+      this.init()
+      this.intervalId = setInterval(() => {
+        this.remaining--
+        this.updateDisplay()
+
+        if (this.remaining <= 0) {
+          this.stop()
+        }
+      }, 1000)
+    }
+
+    stop() {
+      if (this.intervalId) {
+        clearInterval(this.intervalId)
+      }
+    }
+
+    updateDisplay() {
+      if (this.progressBar) {
+        const progress = ((this.duration - this.remaining) / this.duration) * 100
+        this.progressBar.style.width = `${progress}%`
+      }
+
+      if (this.timeDisplay) {
+        const minutes = Math.floor(this.remaining / 60)
+        const seconds = this.remaining % 60
+        this.timeDisplay.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`
+      }
+    }
+  }
+
+  // Initialize immediately
+  const timer = new Timer(initialDuration)
+  timer.start()
+</script>

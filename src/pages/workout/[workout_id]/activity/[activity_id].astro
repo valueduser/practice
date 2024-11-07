@@ -1,0 +1,82 @@
+---
+import Layout from '@layouts/Layout.astro'
+import { getFullActivity, getActivityIdByOrder } from '@data/pocketbase'
+import Timer from '@components/timer/Timer.astro'
+import NavigationButton from '@components/NavigationButton.astro'
+
+const { workout_id, activity_id } = Astro.params
+
+let activity
+try {
+  activity = await getFullActivity(Astro.locals.pb, workout_id, activity_id)
+  console.warn(JSON.stringify(activity.order))
+} catch (e) {
+  console.error(e)
+  return Astro.redirect('/app/dashboard')
+}
+const prevId = await getActivityIdByOrder(
+  Astro.locals.pb,
+  workout_id,
+  activity.order - 1
+)
+
+const nextId = await getActivityIdByOrder(
+  Astro.locals.pb,
+  workout_id,
+  activity.order + 1
+)
+let nextActivity
+try {
+  nextActivity = await getFullActivity(Astro.locals.pb, workout_id, nextId)
+} catch (e) {
+  console.error(e)
+  nextActivity = null
+}
+---
+
+<Layout title={activity.name}>
+  <div>
+    <NavigationButton direction="back" href={`/workout/${workout_id}`} />
+    <div>
+      {activity.name}
+    </div>
+    <div>reps: {activity.reps}</div>
+    <div>sets: {activity.sets}</div>
+    {activity.side != '' && <div>side: {activity.side}</div>}
+    {
+      activity.weight > 0 && (
+        <div>
+          weight: {activity.weight} {activity.weightUnits}
+        </div>
+      )
+    }
+    <div>{activity.instructions}</div>
+    {
+      activity.duration > 0 && (
+        <Timer initialDuration={activity.duration} client:load />
+      )
+    }
+
+    <NavigationButton
+      direction="back"
+      href={prevId
+        ? `/workout/${workout_id}/activity/${prevId}`
+        : `/workout/${workout_id}`}
+    />
+
+    {
+      nextId !== null && (
+        <NavigationButton
+          direction="next"
+          href={
+            nextId
+              ? `/workout/${workout_id}/activity/${nextId}`
+              : `/workout/${workout_id}`
+          }
+        />
+      )
+    }
+    <div>next up: {nextActivity ? nextActivity.name : 'nothingness'}</div>
+    <div>prev: {prevId ? prevId : 'nothingness'}</div>
+  </div>
+</Layout>

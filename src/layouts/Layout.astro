@@ -10,6 +10,17 @@ const { title = 'TBD' } = Astro.props
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     <meta name="description" content="A workout managment tool" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="
+      default-src 'self' data:;
+      script-src 'self' 'unsafe-inline' 'unsafe-eval';
+      connect-src 'self';
+      img-src 'self' data: 127.0.0.1:8090;
+      style-src 'self' 'unsafe-inline';
+      object-src 'none';
+    "
+    />
     <script>
       import htmx from 'htmx.org'
 
@@ -22,7 +33,7 @@ const { title = 'TBD' } = Astro.props
       window.htmx = htmx
     </script>
   </head>
-  <body>
+  <body x-data hx-boost="true">
     <slot />
   </body>
 </html>

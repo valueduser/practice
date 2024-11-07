@@ -1,0 +1,10 @@
+---
+const { workout, activity } = Astro.props
+// TODO: show minutes to complete, equipment, tags, etc
+---
+
+<li>
+  <a href={`/workout/${workout.id}/activity/${activity.activityId}`}>
+    {activity.activityName}
+  </a>
+</li>
