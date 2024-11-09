@@ -39,11 +39,23 @@ try {
 ---
 
 <Layout title={activity.name}>
-  <div>
+  <div class="p-4">
     <NavigationButton direction="back" href={`/workout/${workout_id}`} />
     <div>
       {activity.name}
     </div>
+    {
+      activity.image && (
+        <div class="my-4 flex justify-center">
+          <img
+            src={activity.image}
+            alt={`${activity.name}`}
+            class="max-w-full h-auto rounded-lg"
+            style="max-height: 400px; object-fit: contain;"
+          />
+        </div>
+      )
+    }
     <div>reps: {activity.reps}</div>
     <div>sets: {activity.sets}</div>
     {activity.side != '' && <div>side: {activity.side}</div>}

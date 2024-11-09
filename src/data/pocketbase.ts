@@ -93,7 +93,7 @@ export async function getFullActivity(pb: any, workout_id: string, activity_id: 
     instructions: activity.instructions,
     isActive: activity.isActive,
     plane: activity.plane,
-    image: activity.image,
+    image: pb.files.getUrl(activity, activity.image),
     reps: workoutActivity.reps,
     sets: workoutActivity.sets,
     weight: workoutActivity.weight,
