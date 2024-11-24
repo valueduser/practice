@@ -1,15 +1,27 @@
 ---
-import PocketBase from 'pocketbase'
 import Layout from '@layouts/Layout.astro'
 import WorkoutCard from '@components/workouts/WorkoutCard.astro'
-
 import { getAllWorkouts } from '@data/pocketbase'
+import type { WorkoutsResponse } from '@data/pocketbase-types'
 
-const workouts = await getAllWorkouts(Astro.locals.pb)
+let workouts: WorkoutsResponse[] = []
+let error: string | null = null
+
+try {
+  workouts = await getAllWorkouts(Astro.locals.pb)
+} catch (err) {
+  error = 'Failed to load workouts. ' + err
+}
 ---
 
 <Layout title="Dashboard">
-  <ul>
-    {workouts.map((workout) => <WorkoutCard workout={workout} />)}
-  </ul>
+  {error ? (
+    <p>{error}</p>
+  ) : (
+    <ul>
+      {workouts.map((workout: WorkoutsResponse) => (
+        <WorkoutCard workout={workout} />
+      ))}
+    </ul>
+  )}
 </Layout>
