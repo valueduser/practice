@@ -1,8 +1,9 @@
 ---
 import Layout from '@layouts/Layout.astro'
-import { getFullActivity, getActivityIdByOrder } from '@data/pocketbase'
+import { getActivitiesForWorkout2 } from '@data/pocketbase'
 import Timer from '@components/timer/Timer.astro'
 import NavigationButton from '@components/NavigationButton.astro'
+import type { WorkoutActivity } from '@src/types/workoutActivityType'
 
 const { workout_id, activity_id } = Astro.params
 
@@ -10,31 +11,51 @@ if (!workout_id || !activity_id) {
   return Astro.redirect('/app/dashboard')
 }
 
-let activity
+const allWorkoutActivites = await getActivitiesForWorkout2(
+  Astro.locals.pb,
+  workout_id
+)
+let activity: WorkoutActivity | undefined
 try {
-  activity = await getFullActivity(Astro.locals.pb, workout_id, activity_id)
-  console.warn(JSON.stringify(activity.order))
+  activity = allWorkoutActivites.find((act) => act.id === activity_id)
+
+  if (!activity) {
+    throw new Error('Activity not found')
+  }
 } catch (e) {
   console.error(e)
   return Astro.redirect('/app/dashboard')
 }
-const prevId = await getActivityIdByOrder(
-  Astro.locals.pb,
-  workout_id,
-  activity.order - 1
-)
 
-const nextId = await getActivityIdByOrder(
-  Astro.locals.pb,
-  workout_id,
-  activity.order + 1
-)
-let nextActivity
+let previousActivity, prevId, prevDisplayName
 try {
-  nextActivity = await getFullActivity(Astro.locals.pb, workout_id, nextId)
+  previousActivity = allWorkoutActivites.find(
+    (act) => act.order === activity.order - 1
+  )
+  prevId = previousActivity ? previousActivity.id : -1
+  prevDisplayName = previousActivity
+    ? previousActivity.name +
+      (previousActivity.side ? ' ' + previousActivity.side : '')
+    : 'nothingness'
+} catch (e) {
+  console.error(e)
+  previousActivity = null
+  prevId = -1
+}
+
+let nextActivity, nextId, nextDisplayName
+try {
+  nextActivity = allWorkoutActivites.find(
+    (act) => act.order === activity.order + 1
+  )
+  nextId = nextActivity ? nextActivity.id : -1
+  nextDisplayName = nextActivity
+    ? nextActivity.name + (nextActivity.side ? ' ' + nextActivity.side : '')
+    : 'nothingness'
 } catch (e) {
   console.error(e)
   nextActivity = null
+  nextId = -1
 }
 ---
 
@@ -58,11 +79,11 @@ try {
     }
     <div>reps: {activity.reps}</div>
     <div>sets: {activity.sets}</div>
-    {activity.side != '' && <div>side: {activity.side}</div>}
+    {activity.side && <div>side: {activity.side}</div>}
     {
       activity.weight > 0 && (
         <div>
-          weight: {activity.weight} {activity.weightUnits}
+          weight: {activity.weight} {activity.weight_units}
         </div>
       )
     }
@@ -88,7 +109,7 @@ try {
         />
       )
     }
-    <div>next up: {nextActivity ? nextActivity.name : 'nothingness'}</div>
-    <div>prev: {prevId ? prevId : 'nothingness'}</div>
+    <div>next up: {nextDisplayName}</div>
+    <div>prev: {prevDisplayName}</div>
   </div>
 </Layout>

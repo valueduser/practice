@@ -1,19 +1,19 @@
 ---
 import Layout from '@layouts/Layout.astro'
-import { getWorkout, getActivitiesForWorkout } from '@data/pocketbase'
+import { getWorkout, getActivitiesForWorkout2 } from '@data/pocketbase'
 import ActivityCard from '@components/activities/ActivityCard.astro'
 import NavigationButton from '@components/NavigationButton.astro'
 
 const { workout_id = '' } = Astro.params
 
-let workout
+let workout, activities
 try {
   workout = await getWorkout(Astro.locals.pb, workout_id)
+  activities = await getActivitiesForWorkout2(Astro.locals.pb, workout_id)
 } catch (e) {
-  return Astro.redirect('/app/dashboard')
+  console.error(e)
+  return Astro.redirect('/dashboard')
 }
-
-const activities = await getActivitiesForWorkout(Astro.locals.pb, workout_id)
 ---
 
 <Layout title={workout.name}>

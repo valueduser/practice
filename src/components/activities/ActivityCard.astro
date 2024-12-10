@@ -2,12 +2,17 @@
 const { workout, activity } = Astro.props
 // TODO: show minutes to complete, equipment, tags, etc
 if (!workout || !activity) {
-  throw new Error("Missing required props: workout or activity");
+  throw new Error('Missing required props: workout or activity')
 }
+const activityDisplayName =
+  activity.name + (activity.side ? ' ' + activity.side : '')
 ---
 
 <li>
-  <a href={`/workout/${workout.id}/activity/${activity.activityId}`} aria-label={`View details for ${activity.activityName}`}>
-    {activity.activityName}
+  <a
+    href={`/workout/${workout.id}/activity/${activity.id}`}
+    aria-label={`View details for ${activity.name}`}
+  >
+    {activityDisplayName}
   </a>
 </li>

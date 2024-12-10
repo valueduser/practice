@@ -49,4 +49,4 @@ Feel free to check [our documentation](https://docs.astro.build) or jump into ou
 
 cd ./pocketbase; ./pocketbase serve
 cd ./app; npm run dev
-npx pocketbase-typegen
+npx pocketbase-typegen --db ../pocketbase/pb_data/data.db --out ./src/data/pocketbase-types.ts // TODO: --out ./src/types/pocketbase-types.ts

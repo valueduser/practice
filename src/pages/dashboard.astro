@@ -11,17 +11,20 @@ try {
   workouts = await getAllWorkouts(Astro.locals.pb)
 } catch (err) {
   error = 'Failed to load workouts. ' + err
+  console.error(error)
 }
 ---
 
 <Layout title="Dashboard">
-  {error ? (
-    <p>{error}</p>
-  ) : (
-    <ul>
-      {workouts.map((workout: WorkoutsResponse) => (
-        <WorkoutCard workout={workout} />
-      ))}
-    </ul>
-  )}
+  {
+    error ? (
+      <p>{error}</p>
+    ) : (
+      <ul>
+        {workouts.map((workout: WorkoutsResponse) => (
+          <WorkoutCard workout={workout} />
+        ))}
+      </ul>
+    )
+  }
 </Layout>
