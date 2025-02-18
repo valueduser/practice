@@ -1,6 +1,6 @@
 ---
 import Layout from '@layouts/Layout.astro'
-import { getActivitiesForWorkout2 } from '@data/pocketbase'
+import { getActivitiesForWorkout } from '@data/pocketbase'
 import Timer from '@components/timer/Timer.astro'
 import NavigationButton from '@components/NavigationButton.astro'
 import type { WorkoutActivity } from '@src/types/workoutActivityType'
@@ -11,7 +11,7 @@ if (!workout_id || !activity_id) {
   return Astro.redirect('/app/dashboard')
 }
 
-const allWorkoutActivites = await getActivitiesForWorkout2(
+const allWorkoutActivites = await getActivitiesForWorkout(
   Astro.locals.pb,
   workout_id
 )
