@@ -1,7 +1,7 @@
 import { vi, expect, describe, test, beforeEach } from 'vitest'
-import { getActivitiesForWorkout2 } from '../src/data/pocketbase'
+import { getActivitiesForWorkout } from '../src/data/pocketbase'
 
-describe('getActivitiesForWorkout2', () => {
+describe('getActivitiesForWorkout', () => {
   const mockPb = {
     collection: vi.fn().mockReturnThis(),
     getFullList: vi.fn(),
@@ -57,7 +57,7 @@ describe('getActivitiesForWorkout2', () => {
       }
     ])
 
-    const result = await getActivitiesForWorkout2(mockPb, 'workout1')
+    const result = await getActivitiesForWorkout(mockPb, 'workout1')
 
     expect(result).toHaveLength(2)
     expect(result[0]).toEqual({
@@ -104,7 +104,7 @@ describe('getActivitiesForWorkout2', () => {
         }
       }])
 
-    const result = await getActivitiesForWorkout2(mockPb, 'workout1')
+    const result = await getActivitiesForWorkout(mockPb, 'workout1')
 
     expect(result).toHaveLength(1)
     expect(result[0]).toEqual({
@@ -121,7 +121,7 @@ describe('getActivitiesForWorkout2', () => {
   test('should handle errors gracefully', async () => {
     mockPb.getOne.mockRejectedValue(new Error('Failed to fetch workout'))
 
-    await expect(getActivitiesForWorkout2(mockPb, 'workout1'))
+    await expect(getActivitiesForWorkout(mockPb, 'workout1'))
       .rejects
       .toThrow('Failed to fetch workout')
   })

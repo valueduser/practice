@@ -24,47 +24,6 @@ export async function getWorkout(pb: any, id: string) {
 }
 
 export async function getActivitiesForWorkout(pb: any, workout_id: string): Promise<WorkoutActivity[]> {
-  let activities: WorkoutActivity[] = []
-  const options = {
-    expand: 'workout_id,activity_id',
-    filter: `workout_id = "${workout_id}"`,
-  }
-
-  const workout = await getWorkout(pb, workout_id)
-
-  let warmupActivities: WorkoutActivity[] = []
-  if (workout.warmup.length > 0) {
-    warmupActivities = await getActivitiesForWorkout(pb, workout.warmup)
-  }
-
-// TODO: cooldown
-
-  const workoutActivities = await pb
-    .collection('workout_activity')
-    .getFullList(options)
-
-    activities = warmupActivities.concat(
-      workoutActivities.flatMap((workoutActivity: WorkoutActivityResponse) => {
-  
-      const workout = (workoutActivity.expand as { workout_id: any }).workout_id
-      const activity = workoutActivity.expand.activity_id
-
-      let order: number = workoutActivity.order + warmupActivities.length
-
-      return {
-        id: activity.id,
-        name: activity.name,
-        reps: workoutActivity.reps,
-        sets: workoutActivity.sets,
-        duration: workoutActivity.duration,
-        order: order
-    }})
-  )// TODO: cooldown
-  console.warn(JSON.stringify(activities))
-  return activities
-}
-
-export async function getActivitiesForWorkout2(pb: any, workout_id: string): Promise<WorkoutActivity[]> {
   let activities, warmupActivities, cooldownActivities: WorkoutActivity[] = []
   const workout = await getWorkout(pb, workout_id)
 
@@ -108,7 +67,6 @@ export async function getActivitiesForWorkout2(pb: any, workout_id: string): Pro
     }
   })
 
-// console.warn(JSON.stringify(warmupActivities.concat(activities)))
   return warmupActivities.concat(activities)
 }
 
@@ -116,38 +74,6 @@ export async function getActivity(pb: any, id: string) {
   const activity = await pb.collection('activities').getOne(id)
   return activity;
 }
-
-// export async function getFullActivity(pb: any, workout_id: string, activity_id: string) {
-//   const options = {
-//     expand: 'workout_id,activity_id',
-//     filter: `workout_id = "${workout_id}" && activity_id = "${activity_id}"`,
-//   }
-
-//   const workoutActivities = await pb
-//     .collection('workout_activity')
-//     .getFullList(options)
-
-//   // Return the first (and should be only) matching activity
-//   const workoutActivity = workoutActivities[0]
-//   const activity = workoutActivity.expand.activity_id
-    
-//   return {
-//     id: activity.id,
-//     name: activity.name,
-//     order: workoutActivity.order,
-//     instructions: activity.instructions,
-//     isActive: activity.isActive,
-//     plane: activity.plane,
-//     image: pb.files.getUrl(activity, activity.image),
-//     reps: workoutActivity.reps,
-//     sets: workoutActivity.sets,
-//     weight: workoutActivity.weight,
-//     weightUnits: workoutActivity.weight_units,
-//     duration: workoutActivity.duration,
-//     durationUnits: workoutActivity.duration_units,
-//     side: workoutActivity.side,
-//   }
-// }
 
 export function processImages(pb: TypedPocketBase, activity: ActivitiesResponse) {
   type ImageItem = {
