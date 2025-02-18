@@ -1,5 +1,5 @@
 import { vi, expect, describe, test, beforeEach } from 'vitest'
-import { getActivitiesForWorkout } from '../src/data/pocketbase'
+import { getActivitiesForWorkout } from '../../src/data/pocketbase'
 
 describe('getActivitiesForWorkout', () => {
   const mockPb = {
