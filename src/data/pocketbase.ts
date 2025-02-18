@@ -3,6 +3,7 @@ import type {
   TypedPocketBase,
   WorkoutActivityResponse,
   ActivitiesResponse,
+  WorkoutsResponse,
 } from '@src/data/pocketbase-types' // TODO: move to types folder
 import type { WorkoutActivity } from  '../types/workoutActivityType'
 
@@ -45,7 +46,7 @@ export async function getActivitiesForWorkout(pb: any, workout_id: string): Prom
     activities = warmupActivities.concat(
       workoutActivities.flatMap((workoutActivity: WorkoutActivityResponse) => {
   
-      const workout = workoutActivity.expand.workout_id
+      const workout = (workoutActivity.expand as { workout_id: any }).workout_id
       const activity = workoutActivity.expand.activity_id
 
       let order: number = workoutActivity.order + warmupActivities.length
@@ -73,10 +74,10 @@ export async function getActivitiesForWorkout2(pb: any, workout_id: string): Pro
     expand: 'workout_id,activity_id',
     filter: `workout_id = "${workout.warmup}"`,
   })).map((workoutActivity: WorkoutActivityResponse) => {
-    const workout = workoutActivity.expand.workout_id
-    const activity = workoutActivity.expand.activity_id
+    const workout: WorkoutsResponse = (workoutActivity.expand as { workout_id: any }).workout_id
+    const activity: ActivitiesResponse = (workoutActivity.expand as { activity_id: any}).activity_id
     return {
-      id: activity.id,
+      id: workoutActivity.id,
       name: activity.name,
       reps: workoutActivity.reps,
       sets: workoutActivity.sets,
@@ -92,12 +93,12 @@ export async function getActivitiesForWorkout2(pb: any, workout_id: string): Pro
     expand: 'workout_id,activity_id',
     filter: `workout_id = "${workout.id}"`,
   })).map((workoutActivity: WorkoutActivityResponse) => {
-    const workout = workoutActivity.expand.workout_id
-    const activity = workoutActivity.expand.activity_id
+    const workout: WorkoutsResponse = (workoutActivity.expand as { workout_id: any }).workout_id
+    const activity: ActivitiesResponse = (workoutActivity.expand as { activity_id: any}).activity_id
     const order: number = workoutActivity.order + warmupActivities.length
 
     return {
-      id: activity.id,
+      id: workoutActivity.id,
       name: activity.name,
       reps: workoutActivity.reps,
       sets: workoutActivity.sets,
@@ -107,7 +108,7 @@ export async function getActivitiesForWorkout2(pb: any, workout_id: string): Pro
     }
   })
 
-console.warn(JSON.stringify(warmupActivities))
+// console.warn(JSON.stringify(warmupActivities.concat(activities)))
   return warmupActivities.concat(activities)
 }
 

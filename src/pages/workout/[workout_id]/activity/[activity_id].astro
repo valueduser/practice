@@ -20,7 +20,7 @@ try {
   activity = allWorkoutActivites.find((act) => act.id === activity_id)
 
   if (!activity) {
-    throw new Error('Activity not found')
+    throw new Error(`Activity ${activity_id} not found`)
   }
 } catch (e) {
   console.error(e)
@@ -51,7 +51,7 @@ try {
   nextId = nextActivity ? nextActivity.id : -1
   nextDisplayName = nextActivity
     ? nextActivity.name + (nextActivity.side ? ' ' + nextActivity.side : '')
-    : 'nothingness'
+    : 'Done!'
 } catch (e) {
   console.error(e)
   nextActivity = null
