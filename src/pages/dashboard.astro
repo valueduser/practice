@@ -3,9 +3,14 @@ import Layout from '@layouts/Layout.astro'
 import WorkoutCard from '@components/workouts/WorkoutCard.astro'
 import { getAllWorkouts } from '@data/pocketbase'
 import type { WorkoutsResponse } from '@data/pocketbase-types'
+import '../styles/dashboard.css'
 
 let workouts: WorkoutsResponse[] = []
 let error: string | null = null
+
+const userName = 'Test User'
+const currentStreak = 7
+const personalBest = 14
 
 try {
   workouts = await getAllWorkouts(Astro.locals.pb)
@@ -16,15 +21,41 @@ try {
 ---
 
 <Layout title="Dashboard">
-  {
-    error ? (
-      <p>{error}</p>
-    ) : (
-      <ul>
-        {workouts.map((workout: WorkoutsResponse) => (
-          <WorkoutCard workout={workout} />
-        ))}
-      </ul>
-    )
-  }
+  <div class="min-h-screen bg-black text-white p-4">
+    <h1 class="text-2xl font-bold mb-2">Welcome back, {userName}!</h1>
+
+    <div class="streak-card">
+      <div class="flex justify-between items-center">
+        <h2 class="text-lg">Current Streak</h2>
+        <span class="text-gray-400">Personal best: {personalBest} days</span>
+      </div>
+      <div class="text-2xl font-bold mt-1">{currentStreak} Days</div>
+      <div class="bg-gray-700 rounded-full h-2 mt-2">
+        <div
+          class="streak-progress"
+          style={`width: ${(currentStreak / personalBest) * 100}%`}
+        >
+        </div>
+      </div>
+    </div>
+
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-xl font-semibold">Your Workouts</h2>
+      <a href="#" class="text-blue-500">See All</a>
+    </div>
+
+    {
+      error ? (
+        <p class="text-red-500">{error}</p>
+      ) : (
+        <ul class="space-y-4">
+          {workouts.map((workout) => (
+            <a href={`/workout/${workout.id}`}>
+              <WorkoutCard workout={workout} />
+            </a>
+          ))}
+        </ul>
+      )
+    }
+  </div>
 </Layout>

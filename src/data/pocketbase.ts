@@ -10,11 +10,29 @@ import type { WorkoutActivity } from  '../types/workoutActivityType'
 export const pb = new PocketBase(import.meta.env.POCKETBASE_URL || process.env.POCKETBASE_URL) as TypedPocketBase
 pb.autoCancellation(false)
 
-export async function getAllWorkouts(pb: any) {
-  const workouts = await pb
-    .collection('workouts')
-    .getFullList()
-  return workouts
+export async function getAllWorkouts(pb: TypedPocketBase): Promise<(WorkoutsResponse & { exercises: number, duration: number })[]> {
+  const workouts = await pb.collection('workouts').getFullList()
+  const workoutActivities = await pb.collection('workout_activity').getFullList()
+  
+  return workouts.map(workout => {
+    const activities = workoutActivities.filter(activity => activity.workout_id === workout.id)
+    const totalDuration = activities.reduce((sum, activity) => {
+      if (activity.duration_units === "'minutes'") {
+        return sum + (activity.duration || 0)
+      } else if (activity.duration_units === "'seconds'") {
+        return sum + ((activity.duration || 0) / 60)
+      } else if (activity.duration_units === "'hours'") {
+        return sum + ((activity.duration || 0) * 60)
+      }
+      return sum
+    }, 0)
+    
+    return {
+      ...workout,
+      exercises: activities.length,
+      duration: Math.round(totalDuration)
+    }
+  })
 }
 
 export async function getWorkout(pb: any, id: string) {

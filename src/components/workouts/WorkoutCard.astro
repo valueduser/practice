@@ -1,10 +1,52 @@
 ---
+import type { WorkoutsResponse } from '@data/pocketbase-types'
+
+interface Props {
+  workout: WorkoutsResponse
+}
+
 const { workout } = Astro.props
+const iconColors = {
+  'Full Body': 'bg-blue-600',
+  Cardio: 'bg-red-600',
+  'Upper Body': 'bg-green-600',
+}
+
+const getIconColor = (workoutName: string) => {
+  return iconColors[workoutName as keyof typeof iconColors] || 'bg-purple-600'
+}
+
+const getInitial = (workoutName: string) => {
+  return workoutName.charAt(0)
+}
 // TODO: show minutes to complete, equipment, tags, etc
 ---
 
-<li>
-  <a href={`/workout/${workout.id}`}>
-    {workout.name}
-  </a>
+<li class="workout-card">
+  <div class="flex items-center">
+    <div class={`workout-icon ${getIconColor(workout.name)}`}>
+      {getInitial(workout.name)}
+    </div>
+    <div class="workout-details">
+      <h3 class="workout-title">{workout.name}</h3>
+      <p class="workout-meta">
+        {workout.duration} min • {workout.exercises} exercises
+      </p>
+    </div>
+  </div>
+  <button class="text-gray-400 hover:text-white">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      class="h-6 w-6"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        stroke-width="2"
+        d="M6 18L18 6M6 6l12 12"></path>
+    </svg>
+  </button>
 </li>
