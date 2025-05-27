@@ -30,4 +30,8 @@
   .streak-progress {
     @apply bg-blue-600 h-2 rounded-full mt-2;
   }
+
+  .activity-card {
+    @apply bg-gray-800 rounded-lg p-4 mb-4 flex items-center justify-between;
+  }
 } 
