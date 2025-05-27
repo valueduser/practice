@@ -8,7 +8,7 @@ import '../styles/dashboard.css'
 let workouts: WorkoutsResponse[] = []
 let error: string | null = null
 
-const userName = 'Test User'
+const userName: string | null = 'Test User'
 const currentStreak = 7
 const personalBest = 14
 
@@ -22,7 +22,9 @@ try {
 
 <Layout title="Dashboard">
   <div class="min-h-screen bg-black text-white p-4">
-    <h1 class="text-2xl font-bold mb-2">Welcome back, {userName}!</h1>
+    <h1 class="text-2xl font-bold mb-2">
+      {userName ? `Welcome back, ${userName}!` : 'Welcome!'}
+    </h1>
 
     <div class="streak-card">
       <div class="flex justify-between items-center">
