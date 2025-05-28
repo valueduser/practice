@@ -2,69 +2,43 @@ name: Deploy to Railway
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   workflow_dispatch:
 
 jobs:
-  deploy-pocketbase:
+  deploy:
+    name: Deploy to Railway
     runs-on: ubuntu-latest
-    outputs:
-      pocketbase-url: ${{ steps.deploy-pb.outputs.url }}
-    
+    environment: production
+
     steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Deploy PocketBase to Railway
-      id: deploy-pb
-      uses: railway/deploy@v3
-      with:
-        service: ${{ secrets.RAILWAY_POCKETBASE_SERVICE_ID }}
-        environment: production
-        detach: false
-      env:
-        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
 
-    - name: Wait for PocketBase to be ready
-      run: |
-        echo "Waiting for PocketBase service to be ready..."
-        sleep 30
-        # Extract URL from Railway deployment (this would be set by Railway)
-        echo "POCKETBASE_URL=${{ steps.deploy-pb.outputs.url }}" >> $GITHUB_OUTPUT
+      - name: Set up Railway CLI
+        uses: railwayapp/setup-railway@v1
+        with:
+          railway_token: ${{ secrets.RAILWAY_TOKEN }} # Securely stored Railway API token
 
-  deploy-app:
-    runs-on: ubuntu-latest
-    needs: deploy-pocketbase
-    
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v4
+      - name: Deploy to Railway
+        run: railway up --detach
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }} # Ensures CLI has token
+          # If your railway.toml doesn't specify the project ID, or if you haven't linked the project locally:
+          # RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
+          # If you want to target specific services (usually `railway up` from root handles all):
+          # RAILWAY_SERVICE: "my-astro-service,my-pocketbase-service"
 
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '20'
-        cache: 'npm'
-        cache-dependency-path: 'app/package-lock.json'
-
-    - name: Install dependencies
-      working-directory: ./app
-      run: npm ci
-
-    - name: Build with environment variables
-      working-directory: ./app
-      run: |
-        export POCKETBASE_URL="${{ needs.deploy-pocketbase.outputs.pocketbase-url }}"
-        npm run build
-      env:
-        POCKETBASE_URL: ${{ needs.deploy-pocketbase.outputs.pocketbase-url }}
-
-    - name: Deploy Astro App to Railway
-      uses: railway/deploy@v3
-      with:
-        service: ${{ secrets.RAILWAY_APP_SERVICE_ID }}
-        environment: production
-        detach: false
-      env:
-        RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
-        POCKETBASE_URL: ${{ needs.deploy-pocketbase.outputs.pocketbase-url }} 
+          # Environment variables needed by your Docker build process on Railway
+          # (e.g., for `npm run build` inside Dockerfile) can be set here
+          # or, more commonly, directly in the Railway service settings.
+          # Example:
+          # PUBLIC_POCKETBASE_URL: ${{ secrets.PUBLIC_POCKETBASE_URL_FOR_ASTRO_BUILD }}
+          # CI: true # Often used by build tools
