@@ -3,12 +3,13 @@ import Layout from '@layouts/Layout.astro'
 import WorkoutCard from '@components/workouts/WorkoutCard.astro'
 import { getAllWorkouts } from '@data/pocketbase'
 import type { WorkoutsResponse } from '@data/pocketbase-types'
+import { getUsername } from '@lib/auth'
 import '../styles/dashboard.css'
 
 let workouts: WorkoutsResponse[] = []
 let error: string | null = null
 
-const userName: string | null = 'Test User'
+let userName: string | null = null
 const currentStreak = 7
 const personalBest = 14
 
@@ -18,9 +19,15 @@ try {
   error = 'Failed to load workouts. ' + err
   console.error(error)
 }
+
+try {
+  userName = await getUsername(Astro.request)
+} catch (err) {
+  console.error('Failed to get username:', err)
+  userName = null
+}
 ---
 
-<!-- TODO: This styling doesn't work in Safari -->
 <Layout title="Dashboard">
   <div class="min-h-screen bg-black text-white p-4">
     <h1 class="text-2xl font-bold mb-2">

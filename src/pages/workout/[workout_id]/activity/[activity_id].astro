@@ -8,7 +8,7 @@ import type { WorkoutActivity } from '@src/types/workoutActivityType'
 const { workout_id, activity_id } = Astro.params
 
 if (!workout_id || !activity_id) {
-  return Astro.redirect('/app/dashboard')
+  return Astro.redirect('/dashboard')
 }
 
 const allWorkoutActivites = await getActivitiesForWorkout(
@@ -24,7 +24,7 @@ try {
   }
 } catch (e) {
   console.error(e)
-  return Astro.redirect('/app/dashboard')
+  return Astro.redirect('/dashboard')
 }
 
 let previousActivity, prevId, prevDisplayName

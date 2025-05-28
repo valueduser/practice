@@ -121,3 +121,5 @@ export function processImages(pb: TypedPocketBase, activity: ActivitiesResponse)
 
   return image
 }
+
+// TODO: CRUD on workouts and activities
