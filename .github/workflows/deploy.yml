@@ -10,9 +10,7 @@ jobs:
   deploy:
     name: Deploy to Railway
     runs-on: ubuntu-latest
-    container: ghcr.io/railwayapp/cli:latest
-    environment: production
-      
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -21,10 +19,13 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
+
+      - name: Set up Railway CLI
+        uses: railwayapp/setup-railway@v1
+        with:
+          railway_token: ${{ secrets.RAILWAY_TOKEN }}
 
       - name: Deploy to Railway
-        run: railway up --detach --service=${{ env.SVC_ID }}
+        run: railway up --detach
         env:
-          SVC_ID: 088893d5-c6fa-44eb-b17e-b584ec8cc3c3
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
