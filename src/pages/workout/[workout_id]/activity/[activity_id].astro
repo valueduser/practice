@@ -60,11 +60,11 @@ try {
 ---
 
 <Layout title={activity.name}>
-  <div class="p-4">
+  <div class="min-h-screen bg-black text-white p-4">
     <NavigationButton direction="back" href={`/workout/${workout_id}`} />
-    <div>
+    <h1 class="text-2xl font-bold mb-2">
       {activity.name}
-    </div>
+    </h1>
     {
       activity.image && (
         <div class="my-4 flex justify-center">
