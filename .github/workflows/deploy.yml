@@ -10,8 +10,9 @@ jobs:
   deploy:
     name: Deploy to Railway
     runs-on: ubuntu-latest
+    container: ghcr.io/railwayapp/cli:latest
     environment: production
-
+      
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -22,23 +23,8 @@ jobs:
           node-version: '20'
           cache: 'npm'
 
-      - name: Set up Railway CLI
-        uses: railwayapp/setup-railway@v1
-        with:
-          railway_token: ${{ secrets.RAILWAY_TOKEN }} # Securely stored Railway API token
-
       - name: Deploy to Railway
-        run: railway up --detach
+        run: railway up --detach --service=${{ env.SVC_ID }}
         env:
-          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }} # Ensures CLI has token
-          # If your railway.toml doesn't specify the project ID, or if you haven't linked the project locally:
-          # RAILWAY_PROJECT_ID: ${{ secrets.RAILWAY_PROJECT_ID }}
-          # If you want to target specific services (usually `railway up` from root handles all):
-          # RAILWAY_SERVICE: "my-astro-service,my-pocketbase-service"
-
-          # Environment variables needed by your Docker build process on Railway
-          # (e.g., for `npm run build` inside Dockerfile) can be set here
-          # or, more commonly, directly in the Railway service settings.
-          # Example:
-          # PUBLIC_POCKETBASE_URL: ${{ secrets.PUBLIC_POCKETBASE_URL_FOR_ASTRO_BUILD }}
-          # CI: true # Often used by build tools
+          SVC_ID: 088893d5-c6fa-44eb-b17e-b584ec8cc3c3
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
