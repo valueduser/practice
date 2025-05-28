@@ -12,20 +12,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-
-      - name: Set up Railway CLI
+      - name: Deploy to Railway
         uses: railwayapp/cli-action@v1
         with:
-          railway_token: ${{ secrets.RAILWAY_TOKEN }}
-
-      - name: Deploy to Railway
-        run: railway up --detach
+          command: "deploy --project project-id-goes-here"
         env:
           RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
