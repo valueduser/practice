@@ -1,0 +1,27 @@
+ARG PB_VERSION=0.27.2
+
+FROM alpine:3.18 AS builder
+
+ARG PB_VERSION
+
+RUN apk add --no-cache curl unzip
+
+WORKDIR /tmp
+
+RUN curl -L "https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip" -o pocketbase.zip
+
+RUN unzip pocketbase.zip -d /app_temp && \
+  mv /app_temp/pocketbase /usr/local/bin/pocketbase && \
+  chmod +x /usr/local/bin/pocketbase
+
+RUN rm -rf /tmp/* /app_temp
+
+FROM alpine:3.18
+
+COPY --from=builder /usr/local/bin/pocketbase /usr/local/bin/pocketbase
+
+RUN mkdir -p /pb_data /pb_migrations
+
+EXPOSE 8080
+
+CMD ["/usr/local/bin/pocketbase", "serve", "--http=0.0.0.0:8080", "--dir=/pb_data", "--migrations=/pb_migrations"]
