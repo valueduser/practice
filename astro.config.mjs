@@ -1,10 +1,11 @@
 // @ts-check
 import { defineConfig } from 'astro/config'
-import sentry from '@sentry/astro'
 import tailwind from '@astrojs/tailwind'
-
 import node from '@astrojs/node'
+import sentry from '@sentry/astro'
 import 'dotenv/config'
+
+const port = Number(process.env.PORT) || 4321
 
 // https://astro.build/config
 export default defineConfig({
@@ -22,7 +23,7 @@ export default defineConfig({
     }),
   ],
   output: 'server',
-
+  server: { port: port },
   adapter: node({
     mode: 'standalone',
   }),
