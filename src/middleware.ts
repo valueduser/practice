@@ -11,14 +11,16 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   context.locals.pb.autoCancellation(false)
 
+  const pathname = new URL(context.request.url).pathname
+
   if (!(await isLoggedIn(context.locals.pb, context.request))) {
-    if (context.url.pathname.startsWith('/app/api')) {
+    if (pathname.startsWith('/app/api')) {
       return new Response('Unauthorized', {
         status: 401,
       })
     }
 
-    if (context.url.pathname.startsWith('/app')) {
+    if (pathname.startsWith('/app')) {
       return context.redirect('/login')
     }
   }
