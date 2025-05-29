@@ -1,6 +1,9 @@
 FROM node:lts-slim as runtime
 WORKDIR /app
 
+RUN mkdir -p /app && chown -R node:node /app
+USER node
+
 COPY package.json .
 RUN rm -rf node_modules package-lock.json
 
