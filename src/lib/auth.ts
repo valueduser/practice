@@ -93,3 +93,15 @@ export async function getUsername(request: Request) {
   pb.authStore.loadFromCookie(request.headers.get('Cookie') || '', 'pb_auth')
   return pb.authStore.model?.username
 }
+
+export async function sendResetPasswordLink(email: string) {
+  await pb.collection('users').requestPasswordReset(email)
+}
+
+export function getCurrentUserId() {
+  return pb.authStore.model?.id
+}
+
+export function getCurrentUserEmail() {
+  return pb.authStore.model?.email
+}

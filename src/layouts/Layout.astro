@@ -1,5 +1,12 @@
 ---
-const { title = 'TBD' } = Astro.props
+import HamburgerMenu from '@components/HamburgerMenu.astro'
+
+interface Props {
+  title?: string
+  userName?: string | null
+}
+
+const { title = 'TBD', userName } = Astro.props
 ---
 
 <html lang="en">
@@ -23,17 +30,22 @@ const { title = 'TBD' } = Astro.props
     />
     <script>
       import htmx from 'htmx.org'
+      import Alpine from 'alpinejs'
 
       declare global {
         interface Window {
           htmx: typeof htmx
+          Alpine: typeof Alpine
         }
       }
 
       window.htmx = htmx
+      window.Alpine = Alpine
+      Alpine.start()
     </script>
   </head>
   <body x-data hx-boost="true">
+    <HamburgerMenu userName={userName} />
     <slot />
   </body>
 </html>

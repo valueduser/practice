@@ -13,6 +13,11 @@ export const onRequest = defineMiddleware(async (context, next) => {
 
   const pathname = new URL(context.request.url).pathname
 
+  const protectedRoutes = ['/app', '/dashboard', '/workout']
+  const isProtectedRoute = protectedRoutes.some(route => 
+    pathname === route || pathname.startsWith(route + '/')
+  )
+
   if (!(await isLoggedIn(context.locals.pb, context.request))) {
     if (pathname.startsWith('/app/api')) {
       return new Response('Unauthorized', {
@@ -20,7 +25,7 @@ export const onRequest = defineMiddleware(async (context, next) => {
       })
     }
 
-    if (pathname.startsWith('/app')) {
+    if (isProtectedRoute) {
       return context.redirect('/login')
     }
   }

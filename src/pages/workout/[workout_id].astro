@@ -3,6 +3,7 @@ import Layout from '@layouts/Layout.astro'
 import { getWorkout, getActivitiesForWorkout } from '@data/pocketbase'
 import ActivityCard from '@components/activities/ActivityCard.astro'
 import NavigationButton from '@components/NavigationButton.astro'
+import { getUsername } from '@lib/auth'
 
 const { workout_id = '' } = Astro.params
 
@@ -14,9 +15,17 @@ try {
   console.error(e)
   return Astro.redirect('/dashboard')
 }
+
+let userName: string | null = null
+try {
+  userName = await getUsername(Astro.request)
+} catch (err) {
+  console.error('Failed to get username:', err)
+  userName = null
+}
 ---
 
-<Layout title={workout.name}>
+<Layout title={workout.name} userName={userName}>
   <div class="min-h-screen bg-black text-white p-4">
     <h1 class="text-2xl font-bold mb-2">
       {workout.name}
