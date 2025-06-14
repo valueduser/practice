@@ -1,4 +1,4 @@
-FROM node:lts-slim as runtime
+FROM node:lts-alpine as runtime
 WORKDIR /app
 
 RUN mkdir -p /app && chown -R node:node /app
