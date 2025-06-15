@@ -5,6 +5,7 @@ import Timer from '@components/timer/Timer.astro'
 import NavigationButton from '@components/NavigationButton.astro'
 import type { WorkoutActivity } from '@src/types/workoutActivityType'
 import { getUsername } from '@lib/auth'
+import '../../../../styles/styles.css'
 
 const { workout_id, activity_id } = Astro.params
 
@@ -69,56 +70,112 @@ try {
 ---
 
 <Layout title={activity.name} userName={userName}>
-  <div class="min-h-screen bg-black text-white p-4">
-    <NavigationButton direction="back" href={`/workout/${workout_id}`} />
-    <h1 class="text-2xl font-bold mb-2">
-      {activity.name}
-    </h1>
-    {
-      activity.image && (
-        <div class="my-4 flex justify-center">
-          <img
-            src={activity.image}
-            alt={`${activity.name}`}
-            class="max-w-full h-auto rounded-lg"
-            style="max-height: 400px; object-fit: contain;"
+  <div class="page-container">
+    <div class="page-header">
+      <a href={`/workout/${workout_id}`} class="back-button">
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </a>
+      <h1 class="page-title">{activity.name}</h1>
+    </div>
+
+    <div class="max-w-2xl mx-auto">
+      {
+        activity.image && (
+          <div class="content-card">
+            <img
+              src={activity.image}
+              alt={`${activity.name}`}
+              class="w-full h-auto rounded-lg"
+              style="max-height: 400px; object-fit: contain;"
+            />
+          </div>
+        )
+      }
+
+      <div class="content-card">
+        <div class="grid grid-cols-2 gap-4 text-sm">
+          <div class="flex justify-between">
+            <span class="text-gray-400">Reps:</span>
+            <span class="font-semibold">{activity.reps}</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-gray-400">Sets:</span>
+            <span class="font-semibold">{activity.sets}</span>
+          </div>
+          {
+            activity.side && (
+              <div class="flex justify-between">
+                <span class="text-gray-400">Side:</span>
+                <span class="font-semibold capitalize">{activity.side}</span>
+              </div>
+            )
+          }
+          {
+            activity.weight > 0 && (
+              <div class="flex justify-between">
+                <span class="text-gray-400">Weight:</span>
+                <span class="font-semibold">
+                  {activity.weight} {activity.weight_units}
+                </span>
+              </div>
+            )
+          }
+        </div>
+      </div>
+
+      {
+        activity.instructions && (
+          <div class="content-card">
+            <h3 class="text-lg font-semibold mb-2">Instructions</h3>
+            <p class="text-gray-300 leading-relaxed">{activity.instructions}</p>
+          </div>
+        )
+      }
+
+      {
+        activity.duration > 0 && (
+          <div class="content-card">
+            <Timer initialDuration={activity.duration} />
+          </div>
+        )
+      }
+
+      <div class="flex justify-between items-center mt-6">
+        <div class="flex items-center">
+          <NavigationButton
+            direction="back"
+            href={prevId
+              ? `/workout/${workout_id}/activity/${prevId}`
+              : `/workout/${workout_id}`}
+          />
+          <span class="ml-2 text-sm text-gray-400">
+            {prevId ? prevDisplayName : 'Back to workout'}
+          </span>
+        </div>
+
+        <div class="flex items-center">
+          <span class="mr-2 text-sm text-gray-400">
+            {nextDisplayName}
+          </span>
+          <NavigationButton
+            direction="next"
+            href={nextId
+              ? `/workout/${workout_id}/activity/${nextId}`
+              : `/workout/${workout_id}`}
           />
         </div>
-      )
-    }
-    <div>reps: {activity.reps}</div>
-    <div>sets: {activity.sets}</div>
-    {activity.side && <div>side: {activity.side}</div>}
-    {
-      activity.weight > 0 && (
-        <div>
-          weight: {activity.weight} {activity.weight_units}
-        </div>
-      )
-    }
-    <div>{activity.instructions}</div>
-    {activity.duration > 0 && <Timer initialDuration={activity.duration} />}
-
-    <NavigationButton
-      direction="back"
-      href={prevId
-        ? `/workout/${workout_id}/activity/${prevId}`
-        : `/workout/${workout_id}`}
-    />
-
-    {
-      nextId !== null && (
-        <NavigationButton
-          direction="next"
-          href={
-            nextId
-              ? `/workout/${workout_id}/activity/${nextId}`
-              : `/workout/${workout_id}`
-          }
-        />
-      )
-    }
-    <div>next up: {nextDisplayName}</div>
-    <div>prev: {prevDisplayName}</div>
+      </div>
+    </div>
   </div>
 </Layout>

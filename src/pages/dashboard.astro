@@ -4,7 +4,7 @@ import WorkoutCard from '@components/workouts/WorkoutCard.astro'
 import { getAllWorkouts } from '@data/pocketbase'
 import type { WorkoutsResponse } from '@data/pocketbase-types'
 import { getUsername } from '@lib/auth'
-import '../styles/dashboard.css'
+import '../styles/styles.css'
 
 let workouts: WorkoutsResponse[] = []
 let error: string | null = null

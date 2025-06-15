@@ -1,0 +1,121 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .workout-card {
+    @apply bg-gray-800 rounded-lg p-4 mb-4 flex items-center justify-between;
+  }
+  
+  .workout-icon {
+    @apply w-12 h-12 rounded-full flex items-center justify-center text-white;
+  }
+  
+  .workout-details {
+    @apply flex-grow ml-4;
+  }
+  
+  .workout-title {
+    @apply text-white text-lg font-semibold;
+  }
+  
+  .workout-meta {
+    @apply text-gray-400 text-sm;
+  }
+  
+  .streak-card {
+    @apply bg-gray-800 rounded-lg p-4 mb-6;
+  }
+  
+  .streak-progress {
+    @apply bg-blue-600 h-2 rounded-full mt-2;
+  }
+
+  .activity-card {
+    @apply bg-gray-800 rounded-lg p-4 mb-4 flex items-center justify-between;
+  }
+
+  /* Form Components */
+  .form-container {
+    @apply min-h-screen bg-black text-white p-4 flex items-center justify-center;
+  }
+
+  .form-card {
+    @apply bg-gray-800 rounded-lg p-8 w-full max-w-md shadow-xl;
+  }
+
+  .form-title {
+    @apply text-2xl font-bold mb-6 text-center;
+  }
+
+  .form-group {
+    @apply mb-4;
+  }
+
+  .form-label {
+    @apply block text-sm font-medium text-gray-300 mb-2;
+  }
+
+  .form-input {
+    @apply w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent;
+  }
+
+  .form-button {
+    @apply w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800;
+  }
+
+  .form-link {
+    @apply text-blue-400 hover:text-blue-300 underline;
+  }
+
+  .form-error {
+    @apply text-red-400 text-sm mt-2;
+  }
+
+  .form-success {
+    @apply text-green-400 text-sm mt-2;
+  }
+
+  /* Page Layout */
+  .page-container {
+    @apply min-h-screen bg-black text-white p-4;
+  }
+
+  .page-header {
+    @apply flex items-center mb-8;
+  }
+
+  .page-title {
+    @apply text-3xl font-bold;
+  }
+
+  .back-button {
+    @apply mr-4 p-2 hover:bg-gray-800 rounded-lg transition-colors;
+  }
+
+  /* Card Components */
+  .content-card {
+    @apply bg-gray-900 rounded-lg p-6 mb-6;
+  }
+
+  .card-title {
+    @apply text-xl font-semibold mb-4 flex items-center;
+  }
+
+  .card-icon {
+    @apply w-5 h-5 mr-2;
+  }
+
+  /* Message Components */
+  .message-success {
+    @apply mb-6 p-4 bg-green-800 text-green-100 rounded-lg;
+  }
+
+  .message-error {
+    @apply mb-6 p-4 bg-red-800 text-red-100 rounded-lg;
+  }
+
+  .message-info {
+    @apply mb-6 p-4 bg-blue-800 text-blue-100 rounded-lg;
+  }
+} 

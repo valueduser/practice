@@ -1,6 +1,7 @@
 ---
 import Layout from '@layouts/Layout.astro'
 import { getUsername, getCurrentUserEmail } from '@lib/auth'
+import '../styles/styles.css'
 
 let userName: string | null = null
 let email: string | null = null
@@ -32,13 +33,10 @@ if (Astro.request.method === 'POST') {
 ---
 
 <Layout title="Settings" userName={userName}>
-  <div class="min-h-screen bg-black text-white p-4">
+  <div class="page-container">
     <div class="max-w-2xl mx-auto">
-      <div class="flex items-center mb-8">
-        <a
-          href="/dashboard"
-          class="mr-4 p-2 hover:bg-gray-800 rounded-lg transition-colors"
-        >
+      <div class="page-header">
+        <a href="/dashboard" class="back-button">
           <svg
             class="w-6 h-6"
             fill="none"
@@ -52,28 +50,18 @@ if (Astro.request.method === 'POST') {
               d="M15 19l-7-7 7-7"></path>
           </svg>
         </a>
-        <h1 class="text-3xl font-bold">Settings</h1>
+        <h1 class="page-title">Settings</h1>
       </div>
 
       <!-- Success/Error Messages -->
-      {
-        message && (
-          <div class="mb-6 p-4 bg-green-800 text-green-100 rounded-lg">
-            {message}
-          </div>
-        )
-      }
-      {
-        error && (
-          <div class="mb-6 p-4 bg-red-800 text-red-100 rounded-lg">{error}</div>
-        )
-      }
+      {message && <div class="message-success">{message}</div>}
+      {error && <div class="message-error">{error}</div>}
 
       <!-- Profile Section -->
-      <div class="bg-gray-900 rounded-lg p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-4 flex items-center">
+      <div class="content-card">
+        <h2 class="card-title">
           <svg
-            class="w-5 h-5 mr-2"
+            class="card-icon"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -92,29 +80,21 @@ if (Astro.request.method === 'POST') {
           <input type="hidden" name="action" value="update_profile" />
 
           <div class="space-y-4">
-            <div>
-              <label
-                for="email"
-                class="block text-sm font-medium text-gray-300 mb-2"
-              >
-                Email
-              </label>
+            <div class="form-group">
+              <label for="email" class="form-label"> Email </label>
               <input
                 type="text"
                 id="email"
                 name="email"
                 value={email || ''}
-                class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="form-input"
                 readonly
               />
               <p class="text-xs text-gray-400 mt-1">Email cannot be changed</p>
             </div>
 
-            <div>
-              <label
-                for="display_name"
-                class="block text-sm font-medium text-gray-300 mb-2"
-              >
+            <div class="form-group">
+              <label for="display_name" class="form-label">
                 Display Name
               </label>
               <input
@@ -122,25 +102,22 @@ if (Astro.request.method === 'POST') {
                 id="display_name"
                 name="display_name"
                 value={userName || ''}
-                class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                class="form-input"
               />
             </div>
           </div>
 
-          <button
-            type="submit"
-            class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
-          >
+          <button type="submit" class="form-button mt-4">
             Update Profile
           </button>
         </form>
       </div>
 
       <!-- Security Section -->
-      <div class="bg-gray-900 rounded-lg p-6 mb-6">
-        <h2 class="text-xl font-semibold mb-4 flex items-center">
+      <div class="content-card">
+        <h2 class="card-title">
           <svg
-            class="w-5 h-5 mr-2"
+            class="card-icon"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -158,70 +135,54 @@ if (Astro.request.method === 'POST') {
         <form method="post" class="space-y-4">
           <input type="hidden" name="action" value="change_password" />
 
-          <div>
-            <label
-              for="current_password"
-              class="block text-sm font-medium text-gray-300 mb-2"
-            >
+          <div class="form-group">
+            <label for="current_password" class="form-label">
               Current Password
             </label>
             <input
               type="password"
               id="current_password"
               name="current_password"
-              class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="form-input"
               required
             />
           </div>
 
-          <div>
-            <label
-              for="new_password"
-              class="block text-sm font-medium text-gray-300 mb-2"
-            >
-              New Password
-            </label>
+          <div class="form-group">
+            <label for="new_password" class="form-label"> New Password </label>
             <input
               type="password"
               id="new_password"
               name="new_password"
               pattern="(?=.*\\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
               title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters"
-              class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="form-input"
               required
             />
           </div>
 
-          <div>
-            <label
-              for="confirm_password"
-              class="block text-sm font-medium text-gray-300 mb-2"
-            >
+          <div class="form-group">
+            <label for="confirm_password" class="form-label">
               Confirm New Password
             </label>
             <input
               type="password"
               id="confirm_password"
               name="confirm_password"
-              class="w-full px-3 py-2 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="form-input"
               required
             />
           </div>
 
-          <button
-            type="submit"
-            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-          >
-            Change Password
-          </button>
+          <button type="submit" class="form-button"> Change Password </button>
         </form>
       </div>
 
       <!-- Preferences Section -->
-      <div class="bg-gray-900 rounded-lg p-6">
-        <h2 class="text-xl font-semibold mb-4 flex items-center">
+      <div class="content-card">
+        <h2 class="card-title">
           <svg
-            class="w-5 h-5 mr-2"
+            class="card-icon"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
