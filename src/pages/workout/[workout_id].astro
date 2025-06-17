@@ -57,7 +57,9 @@ try {
       <ul class="space-y-4">
         {
           activities.map((activity) => (
-            <ActivityCard workout={workout} activity={activity} />
+            <a href={`/workout/${workout.id}/activity/${activity.id}`}>
+              <ActivityCard workout={workout} activity={activity} />
+            </a>
           ))
         }
       </ul>
