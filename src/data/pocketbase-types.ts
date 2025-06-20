@@ -106,7 +106,8 @@ export type WorkoutActivityRecord = {
 	side?: WorkoutActivitySideOptions
 	weight?: number
 	weight_units?: WorkoutActivityWeightUnitsOptions
-	workout_id?: RecordIdString
+	workout_id?: RecordIdString,
+	image?: string
 }
 
 export type WorkoutGroupRecord = {

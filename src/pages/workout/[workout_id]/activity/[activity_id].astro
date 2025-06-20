@@ -1,6 +1,10 @@
 ---
 import Layout from '@layouts/Layout.astro'
-import { getActivitiesForWorkout } from '@data/pocketbase'
+import {
+  getActivitiesForWorkout,
+  getActivity,
+  processImage,
+} from '@data/pocketbase'
 import Timer from '@components/timer/Timer.astro'
 import NavigationButton from '@components/NavigationButton.astro'
 import type { WorkoutActivity } from '@src/types/workoutActivityType'
@@ -13,52 +17,42 @@ if (!workout_id || !activity_id) {
   return Astro.redirect('/dashboard')
 }
 
-const allWorkoutActivites = await getActivitiesForWorkout(
-  Astro.locals.pb,
-  workout_id
-)
-let activity: WorkoutActivity | undefined
+let allWorkoutActivites: WorkoutActivity[] = []
 try {
-  activity = allWorkoutActivites.find((act) => act.id === activity_id)
-
-  if (!activity) {
-    throw new Error(`Activity ${activity_id} not found`)
-  }
+  allWorkoutActivites = await getActivitiesForWorkout(
+    Astro.locals.pb,
+    workout_id
+  )
 } catch (e) {
   console.error(e)
   return Astro.redirect('/dashboard')
 }
 
-let previousActivity, prevId, prevDisplayName
-try {
-  previousActivity = allWorkoutActivites.find(
-    (act) => act.order === activity.order - 1
-  )
-  prevId = previousActivity ? previousActivity.id : -1
-  prevDisplayName = previousActivity
-    ? previousActivity.name +
-      (previousActivity.side ? ' ' + previousActivity.side : '')
-    : ''
-} catch (e) {
-  console.error(e)
-  previousActivity = null
-  prevId = -1
+const activity = allWorkoutActivites.find((act) => act.id === activity_id)
+if (!activity) {
+  return Astro.redirect('/dashboard')
 }
 
-let nextActivity, nextId, nextDisplayName
-try {
-  nextActivity = allWorkoutActivites.find(
-    (act) => act.order === activity.order + 1
-  )
-  nextId = nextActivity ? nextActivity.id : -1
-  nextDisplayName = nextActivity
-    ? nextActivity.name + (nextActivity.side ? ' ' + nextActivity.side : '')
-    : 'Done!'
-} catch (e) {
-  console.error(e)
-  nextActivity = null
-  nextId = -1
-}
+const previousActivity =
+  allWorkoutActivites
+    .filter((act) => act.order < activity.order)
+    .sort((a, b) => b.order - a.order)[0] || null
+const prevId = previousActivity ? previousActivity.id : null
+const prevDisplayName = previousActivity
+  ? previousActivity.name +
+    (previousActivity.side ? ' ' + previousActivity.side : '')
+  : 'Back to workout'
+
+const nextActivity =
+  allWorkoutActivites
+    .filter((act) => act.order > activity.order)
+    .sort((a, b) => a.order - b.order)[0] || null
+const nextId = nextActivity ? nextActivity.id : null
+const nextDisplayName = nextActivity
+  ? nextActivity.name + (nextActivity.side ? ' ' + nextActivity.side : '')
+  : 'Done!'
+
+const image = processImage(Astro.locals.pb, otherThing)
 
 let userName: string | null = null
 try {
@@ -90,19 +84,6 @@ try {
     </div>
 
     <div class="max-w-2xl mx-auto">
-      {
-        activity.image && (
-          <div class="content-card">
-            <img
-              src={activity.image}
-              alt={`${activity.name}`}
-              class="w-full h-auto rounded-lg"
-              style="max-height: 400px; object-fit: contain;"
-            />
-          </div>
-        )
-      }
-
       <div class="content-card">
         <div class="grid grid-cols-2 gap-4 text-sm">
           <div class="flex justify-between">
@@ -133,6 +114,19 @@ try {
           }
         </div>
       </div>
+
+      {
+        activity.image && (
+          <div class="content-card">
+            <img
+              src={image.url}
+              alt={`${activity.name}`}
+              class="w-full h-auto rounded-lg"
+              style="max-height: 400px; object-fit: contain;"
+            />
+          </div>
+        )
+      }
 
       {
         activity.instructions && (

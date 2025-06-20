@@ -4,6 +4,7 @@ import type {
   WorkoutActivityResponse,
   ActivitiesResponse,
   WorkoutsResponse,
+  ActivitiesRecord,
 } from '@src/data/pocketbase-types' // TODO: move to types folder
 import type { WorkoutActivity } from  '../types/workoutActivityType'
 
@@ -54,13 +55,15 @@ export async function getActivitiesForWorkout(pb: any, workout_id: string): Prom
     const workout: WorkoutsResponse = (workoutActivity.expand as { workout_id: any }).workout_id
     const activity: ActivitiesResponse = (workoutActivity.expand as { activity_id: any}).activity_id
     return {
-      id: workoutActivity.id,
+      id: activity.id,
+      workout_activity_id: workoutActivity.id,
       name: activity.name,
       reps: workoutActivity.reps,
       sets: workoutActivity.sets,
       duration: workoutActivity.duration,
       order: workoutActivity.order,
-      side: workoutActivity.side
+      side: workoutActivity.side,
+      image: activity.image
     }
   })
 
@@ -75,13 +78,15 @@ export async function getActivitiesForWorkout(pb: any, workout_id: string): Prom
     const order: number = workoutActivity.order + warmupActivities.length
 
     return {
-      id: workoutActivity.id,
+      id: activity.id,
+      workout_activity_id: workoutActivity.id,
       name: activity.name,
       reps: workoutActivity.reps,
       sets: workoutActivity.sets,
       duration: workoutActivity.duration,
       order: order,
-      side: workoutActivity.side
+      side: workoutActivity.side,
+      image: activity.image
     }
   })
 
@@ -89,35 +94,27 @@ export async function getActivitiesForWorkout(pb: any, workout_id: string): Prom
 }
 
 export async function getActivity(pb: any, id: string) {
+  console.warn(`Fetching activity with ID: ${id}`)
   const activity = await pb.collection('activities').getOne(id)
   return activity;
 }
 
-export function processImages(pb: TypedPocketBase, activity: ActivitiesResponse) {
+export function processImage(pb: any, activity: ActivitiesRecord) {
   type ImageItem = {
     name: string
     url: string
-    // url_larger: string
   }
 
   const image: ImageItem = {
-    name: activity.image,
-    url: pb.files.getUrl(activity, activity.image, {
-      thumb: '0x800',
-    })
+    name: activity.name || 'default.png',
+    url: pb.files.getUrl(activity, activity.image
+    //   , {
+    //   thumb: '0x800',
+    // }
+  )
   }
-
-  // activity.image?.map((img: string) => {
-  //   image.push({
-  //     name: image,
-  //     url: pb.files.getUrl(activity, img, {
-  //       thumb: '0x800',
-  //     }),
-  //     // url_larger: pb.files.getUrl(activity, image, {
-  //     //   thumb: '0x800',
-  //     // }),
-  //   })
-  // })
+  // image.name = activity.name || 'default.png'
+  // image.url = pb.files.getUrl(activity, activity.image)
 
   return image
 }
