@@ -7,6 +7,20 @@ interface Props {
 }
 
 const { title = 'TBD', userName } = Astro.props
+
+const getImageSources = () => {
+  const sources = ["'self'", 'data:']
+
+  if (import.meta.env.DEV) {
+    sources.push('127.0.0.1:8090', 'localhost:8090')
+  } else {
+    sources.push('pocketbase.railway.internal:8080')
+  }
+
+  return sources.join(' ')
+}
+
+const imageSources = getImageSources()
 ---
 
 <html lang="en">
@@ -19,14 +33,14 @@ const { title = 'TBD', userName } = Astro.props
     <meta name="description" content="A workout managment tool" />
     <meta
       http-equiv="Content-Security-Policy"
-      content="
+      content={`
       default-src 'self' data:;
       script-src 'self' 'unsafe-inline' 'unsafe-eval';
       connect-src 'self';
-      img-src 'self' data: 127.0.0.1:8090;
+      img-src ${imageSources};
       style-src 'self' 'unsafe-inline';
       object-src 'none';
-    "
+    `}
     />
     <script>
       import htmx from 'htmx.org'
