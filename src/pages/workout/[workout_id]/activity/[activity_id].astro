@@ -52,6 +52,7 @@ const nextDisplayName = nextActivity
   ? nextActivity.name + (nextActivity.side ? ' ' + nextActivity.side : '')
   : 'Done!'
 
+const otherThing = await getActivity(Astro.locals.pb, activity_id)
 const image = processImage(Astro.locals.pb, otherThing)
 
 let userName: string | null = null

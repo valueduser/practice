@@ -108,13 +108,7 @@ export function processImage(pb: any, activity: ActivitiesRecord) {
   const image: ImageItem = {
     name: activity.name || 'default.png',
     url: pb.files.getUrl(activity, activity.image
-    //   , {
-    //   thumb: '0x800',
-    // }
-  )
-  }
-  // image.name = activity.name || 'default.png'
-  // image.url = pb.files.getUrl(activity, activity.image)
+  )}
 
   return image
 }
