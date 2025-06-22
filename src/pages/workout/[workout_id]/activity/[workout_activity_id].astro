@@ -11,9 +11,12 @@ import type { WorkoutActivity } from '@src/types/workoutActivityType'
 import { getUsername } from '@lib/auth'
 import '../../../../styles/styles.css'
 
-const { workout_id, activity_id } = Astro.params
+const { workout_id, workout_activity_id } = Astro.params
 
-if (!workout_id || !activity_id) {
+if (!workout_id || !workout_activity_id) {
+  console.error(
+    `Invalid parameters: workout_id=${workout_id}, workout_activity_id=${workout_activity_id}`
+  )
   return Astro.redirect('/dashboard')
 }
 
@@ -28,8 +31,13 @@ try {
   return Astro.redirect('/dashboard')
 }
 
-const activity = allWorkoutActivites.find((act) => act.id === activity_id)
+const activity = allWorkoutActivites.find(
+  (act) => act.workout_activity_id === workout_activity_id
+)
 if (!activity) {
+  console.error(
+    `Activity with ID ${workout_activity_id} not found in workout ${workout_id}`
+  )
   return Astro.redirect('/dashboard')
 }
 
@@ -37,7 +45,8 @@ const previousActivity =
   allWorkoutActivites
     .filter((act) => act.order < activity.order)
     .sort((a, b) => b.order - a.order)[0] || null
-const prevId = previousActivity ? previousActivity.id : null
+
+const prevId = previousActivity ? previousActivity.workout_activity_id : null
 const prevDisplayName = previousActivity
   ? previousActivity.name +
     (previousActivity.side ? ' ' + previousActivity.side : '')
@@ -47,12 +56,13 @@ const nextActivity =
   allWorkoutActivites
     .filter((act) => act.order > activity.order)
     .sort((a, b) => a.order - b.order)[0] || null
-const nextId = nextActivity ? nextActivity.id : null
+
+const nextId = nextActivity ? nextActivity.workout_activity_id : null
 const nextDisplayName = nextActivity
   ? nextActivity.name + (nextActivity.side ? ' ' + nextActivity.side : '')
   : 'Done!'
 
-const otherThing = await getActivity(Astro.locals.pb, activity_id)
+const otherThing = await getActivity(Astro.locals.pb, activity.id)
 const image = processImage(Astro.locals.pb, otherThing)
 
 let userName: string | null = null

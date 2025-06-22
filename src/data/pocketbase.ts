@@ -5,6 +5,7 @@ import type {
   ActivitiesResponse,
   WorkoutsResponse,
   ActivitiesRecord,
+  WorkoutActivityRecord,
 } from '@src/data/pocketbase-types' // TODO: move to types folder
 import type { WorkoutActivity } from  '../types/workoutActivityType'
 
@@ -42,9 +43,9 @@ export async function getWorkout(pb: any, id: string) {
   return workout
 }
 
-export async function getActivitiesForWorkout(pb: any, workout_id: string): Promise<WorkoutActivity[]> {
+export async function getActivitiesForWorkout(pb: any, main_workout_id: string): Promise<WorkoutActivity[]> {
   let activities, warmupActivities, cooldownActivities: WorkoutActivity[] = []
-  const workout = await getWorkout(pb, workout_id)
+  const workout = await getWorkout(pb, main_workout_id)
 
   warmupActivities = (await pb
   .collection('workout_activity')
@@ -90,7 +91,7 @@ export async function getActivitiesForWorkout(pb: any, workout_id: string): Prom
     }
   })
 
-  return warmupActivities.concat(activities)
+  return warmupActivities.concat(activities).concat(cooldownActivities)
 }
 
 export async function getActivity(pb: any, id: string) {
@@ -112,5 +113,6 @@ export function processImage(pb: any, activity: ActivitiesRecord) {
 
   return image
 }
+
 
 // TODO: CRUD on workouts and activities
