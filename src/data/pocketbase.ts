@@ -95,18 +95,17 @@ export async function getActivitiesForWorkout(pb: any, main_workout_id: string):
 }
 
 export async function getActivity(pb: any, id: string) {
-  console.warn(`Fetching activity with ID: ${id}`)
   const activity = await pb.collection('activities').getOne(id)
   return activity;
 }
 
-export function processImage(pb: any, activity: ActivitiesRecord) {
+export async function processImage(pb: any, activity: ActivitiesRecord) {
   type ImageItem = {
     name: string
     url: string
   }
 
-  let token = pb.files.getToken()
+  let token = await pb.files.getToken()
 
   const image: ImageItem = {
     name: activity.name || 'default.png',
