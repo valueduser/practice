@@ -44,7 +44,7 @@ const imageSources = getImageSources()
       default-src 'self' data:;
       script-src 'self' 'unsafe-inline' 'unsafe-eval';
       connect-src 'self';
-      img-src ${imageSources};
+      img-src 'self' data: ${process.env.POCKETBASE_PUBLIC_BASE_URL};
       style-src 'self' 'unsafe-inline';
       object-src 'none';
     `}
