@@ -106,9 +106,11 @@ export function processImage(pb: any, activity: ActivitiesRecord) {
     url: string
   }
 
+  let token = pb.files.getToken()
+
   const image: ImageItem = {
     name: activity.name || 'default.png',
-    url: pb.files.getUrl(activity, activity.image
+    url: pb.files.getUrl(activity, activity.image, {token: token}
   )}
 
   return image
