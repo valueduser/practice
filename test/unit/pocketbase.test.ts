@@ -22,7 +22,7 @@ describe('getActivitiesForWorkout', () => {
     // Mock warmup activities
     mockPb.getFullList.mockResolvedValueOnce([
       {
-        id: 'wa1',
+        id: 'act1',
         reps: 10,
         sets: 2,
         duration: 30,
@@ -61,22 +61,26 @@ describe('getActivitiesForWorkout', () => {
 
     expect(result).toHaveLength(2)
     expect(result[0]).toEqual({
-      id: 'wa1',
+      id: 'act1',
+      image: undefined,
       name: 'Warmup Exercise',
       reps: 10,
       sets: 2,
       duration: 30,
       order: 0,
-      side: 'both'
+      side: 'both',
+      workout_activity_id: "act1"
     })
     expect(result[1]).toEqual({
-      id: 'wa2',
+      id: 'act2',
+      image: undefined,
       name: 'Main Exercise',
       reps: 12,
       sets: 3,
       duration: 45,
       order: 1,
-      side: 'left'
+      side: 'left',
+      workout_activity_id: "wa2",
     })
   })
 
@@ -108,13 +112,15 @@ describe('getActivitiesForWorkout', () => {
 
     expect(result).toHaveLength(1)
     expect(result[0]).toEqual({
-      id: 'wa1',
+      id: 'act1',
+      image: undefined,
       name: 'Main Exercise',
       reps: 12,
       sets: 3,
       duration: 45,
       order: 0,
-      side: 'right'
+      side: 'right',
+      workout_activity_id: "wa1"
     })
   })
 
