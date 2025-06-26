@@ -107,10 +107,17 @@ export async function processImage(pb: any, activity: ActivitiesRecord) {
 
   let token = await pb.files.getToken()
 
+  let imageUrl = pb.files.getUrl(activity, activity.image, {token: token})
+  
+  if (imageUrl.includes('pocketbase.railway.internal')) {
+    const publicDomain = import.meta.env.PUBLIC_POCKETBASE_DOMAIN || 'pocketbase-production-7ee4.up.railway.app'
+    imageUrl = imageUrl.replace('pocketbase.railway.internal:8080', publicDomain)
+  }
+
   const image: ImageItem = {
     name: activity.name || 'default.png',
-    url: pb.files.getUrl(activity, activity.image, {token: token}
-  )}
+    url: imageUrl
+  }
 
   return image
 }

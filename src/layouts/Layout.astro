@@ -16,14 +16,14 @@ const getImageSources = () => {
   if (import.meta.env.DEV) {
     sources.push('127.0.0.1:8090', 'localhost:8090')
   } else {
+    const productionDomain =
+      import.meta.env.PUBLIC_POCKETBASE_DOMAIN ||
+      'pocketbase-production-7ee4.up.railway.app'
+    sources.push(`https://${productionDomain}`)
+    sources.push(`http://${productionDomain}`)
+
     sources.push('http://127.0.0.1:8080', 'https://127.0.0.1:8080')
     sources.push('http://localhost:8080', 'https://localhost:8080')
-    sources.push('http://pocketbase.railway.internal:8080')
-    sources.push('https://pocketbase.railway.internal:8080')
-    // const productionDomain =
-    //   import.meta.env.PUBLIC_POCKETBASE_DOMAIN ||
-    //   'pocketbase-production-7ee4.up.railway.app'
-    // sources.push(productionDomain)
   }
 
   return sources.join(' ')
