@@ -11,14 +11,10 @@ const { title = 'TBD', userName } = Astro.props
 const getImageSources = () => {
   const sources = ["'self'", 'data:']
 
-  console.log('Environment:', import.meta.env.MODE)
-
   if (import.meta.env.DEV) {
     sources.push('127.0.0.1:8090', 'localhost:8090')
   } else {
-    const productionDomain =
-      import.meta.env.PUBLIC_POCKETBASE_DOMAIN ||
-      'pocketbase-production-7ee4.up.railway.app'
+    const productionDomain = import.meta.env.PUBLIC_POCKETBASE_DOMAIN
     sources.push(`https://${productionDomain}`)
     sources.push(`http://${productionDomain}`)
 
