@@ -7,6 +7,7 @@ export interface WorkoutActivity extends WorkoutActivityResponse {
   workout_activity_id: string;
   name: string;
   instructions: string;
+  notes: string;
   isActive: boolean;
   plane: string;
   image: string;

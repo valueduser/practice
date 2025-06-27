@@ -149,6 +149,14 @@ try {
       }
 
       {
+        activity.notes && (
+          <div class="content-card">
+            <p class="text-gray-300 leading-relaxed">{activity.notes}</p>
+          </div>
+        )
+      }
+
+      {
         activity.duration > 0 && (
           <div class="content-card">
             <Timer
