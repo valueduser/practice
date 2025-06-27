@@ -62,6 +62,7 @@ export async function getActivitiesForWorkout(pb: any, main_workout_id: string):
       reps: workoutActivity.reps,
       sets: workoutActivity.sets,
       duration: workoutActivity.duration,
+      duration_units: workoutActivity.duration_units,
       order: workoutActivity.order,
       side: workoutActivity.side,
       image: activity.image
@@ -85,6 +86,7 @@ export async function getActivitiesForWorkout(pb: any, main_workout_id: string):
       reps: workoutActivity.reps,
       sets: workoutActivity.sets,
       duration: workoutActivity.duration,
+      duration_units: workoutActivity.duration_units,
       order: order,
       side: workoutActivity.side,
       image: activity.image

@@ -151,7 +151,10 @@ try {
       {
         activity.duration > 0 && (
           <div class="content-card">
-            <Timer initialDuration={activity.duration} />
+            <Timer
+              initialDuration={activity.duration}
+              initialDurationUnits={activity.duration_units}
+            />
           </div>
         )
       }

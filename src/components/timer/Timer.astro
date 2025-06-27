@@ -1,28 +1,56 @@
 ---
 interface Props {
   initialDuration: number
+  initialDurationUnits?: string
 }
 
-const { initialDuration } = Astro.props
+const { initialDuration, initialDurationUnits } = Astro.props
 ---
 
 <div class="timer-component" style="width: 100%;">
   <div class="timer" style="width: 100%; max-width: 300px; margin: 0 auto;">
-    <div class="progress-bar" style="width: 100%; height: 20px; background-color: #e0e0e0; border-radius: 10px; overflow: hidden;">
-      <div class="progress" style="width: 0; height: 100%; background-color: #4caf50; transition: width 0.5s ease-in-out;"></div>
+    <div
+      class="progress-bar"
+      style="width: 100%; height: 20px; background-color: #e0e0e0; border-radius: 10px; overflow: hidden;"
+    >
+      <div
+        class="progress"
+        style="width: 0; height: 100%; background-color: #4caf50; transition: width 0.5s ease-in-out;"
+      >
+      </div>
     </div>
-    <div class="time-display" style="text-align: center; font-size: 1.5rem; margin-top: 10px;">00:00</div>
+    <div
+      class="time-display"
+      style="text-align: center; font-size: 1.5rem; margin-top: 10px;"
+    >
+      00:00
+    </div>
   </div>
 </div>
 
-<script define:vars={{ initialDuration }}>
+<script define:vars={{ initialDuration, initialDurationUnits }}>
   class Timer {
-    constructor(duration) {
-      this.duration = duration
-      this.remaining = duration
+    constructor(duration, durationUnits) {
+      this.durationUnits = durationUnits || 'seconds'
+      this.duration = this.convertToSeconds(duration, durationUnits)
+      this.remaining = this.duration
       this.progressBar = null
       this.timeDisplay = null
       this.intervalId = null
+    }
+
+    convertToSeconds(duration, units) {
+      const normalizedUnits = units.replace(/^'+|'+$/g, '')
+      switch (normalizedUnits) {
+        case 'seconds':
+          return duration
+        case 'minutes':
+          return duration * 60
+        case 'hours':
+          return duration * 3600
+        default:
+          throw new Error(`Unsupported duration unit: '${normalizedUnits}'`)
+      }
     }
 
     init() {
@@ -51,7 +79,8 @@ const { initialDuration } = Astro.props
 
     updateDisplay() {
       if (this.progressBar) {
-        const progress = ((this.duration - this.remaining) / this.duration) * 100
+        const progress =
+          ((this.duration - this.remaining) / this.duration) * 100
         this.progressBar.style.width = `${progress}%`
       }
 
@@ -64,6 +93,6 @@ const { initialDuration } = Astro.props
   }
 
   // Initialize immediately
-  const timer = new Timer(initialDuration)
+  const timer = new Timer(initialDuration, initialDurationUnits)
   timer.start()
 </script>
