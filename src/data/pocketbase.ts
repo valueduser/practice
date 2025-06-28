@@ -67,7 +67,9 @@ export async function getActivitiesForWorkout(pb: any, main_workout_id: string):
       instructions: activity.instructions,
       notes: activity.notes,
       side: workoutActivity.side,
-      image: activity.image
+      image: activity.image,
+      weight: workoutActivity.weight,
+      weight_units: workoutActivity.weight_units
     }
   })
 
@@ -93,7 +95,9 @@ export async function getActivitiesForWorkout(pb: any, main_workout_id: string):
       instructions: activity.instructions,
       notes: activity.notes,
       side: workoutActivity.side,
-      image: activity.image
+      image: activity.image,
+      weight: workoutActivity.weight,
+      weight_units: workoutActivity.weight_units
     }
   })
 

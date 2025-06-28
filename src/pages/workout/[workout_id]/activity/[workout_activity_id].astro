@@ -62,8 +62,12 @@ const nextDisplayName = nextActivity
   ? nextActivity.name + (nextActivity.side ? ' ' + nextActivity.side : '')
   : 'Done!'
 
-const otherThing = await getActivity(Astro.locals.pb, activity.id)
-const image = await processImage(Astro.locals.pb, otherThing)
+const normalizedWeightUnits = activity.weight_units
+  ? activity.weight_units.replace(/^'+|'+$/g, '')
+  : ''
+
+const fullActivity = await getActivity(Astro.locals.pb, activity.id)
+const image = await processImage(Astro.locals.pb, fullActivity)
 
 let userName: string | null = null
 try {
@@ -118,7 +122,7 @@ try {
               <div class="flex justify-between">
                 <span class="text-gray-400">Weight:</span>
                 <span class="font-semibold">
-                  {activity.weight} {activity.weight_units}
+                  {activity.weight} {normalizedWeightUnits}
                 </span>
               </div>
             )
